@@ -4,7 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+chrono = "0.4.38"
 clap = { version = "4.5.20", features = ["derive"] }
 env_logger = "0.11.5"
+log = "0.4.22"
 opcua = { git = "https://github.com/centroid-is/opcua.git", branch = "master" }
 tokio = "1.41.0"

@@ -1,4 +1,5 @@
 use clap::Parser;
+use log::{error, info};
 use opcua::client::ClientBuilder;
 use opcua::client::DataChangeCallback;
 use opcua::client::MonitoredItem;
@@ -8,6 +9,7 @@ use opcua::types::{MonitoredItemCreateRequest, NodeId, TimestampsToReturn};
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Duration;
+
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -81,7 +83,6 @@ pub async fn subscribe_to_variables(
             0,
             true,
             DataChangeCallback::new(|dv, item| {
-                println!("Data change from server:");
                 print_value(&dv, item);
             }),
         )
@@ -103,7 +104,12 @@ pub async fn subscribe_to_variables(
 pub fn print_value(data_value: &DataValue, item: &MonitoredItem) {
     let node_id = &item.item_to_monitor().node_id;
     if let Some(ref value) = data_value.value {
-        println!("Item \"{}\", Value = {:?}", node_id, value);
+        println!(
+            "[{}] {} = {:?}",
+            chrono::Local::now().format("%H:%M:%S.%3f"),
+            node_id,
+            value
+        );
     } else {
         println!(
             "Item \"{}\", Value not found, error: {}",
